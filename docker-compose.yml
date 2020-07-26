@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  mvcweb7-mysql:
+    image: mysql:5.7
+    container_name: mvcweb7-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=demo_mvc_7
+    volumes:
+      - mvcweb7db:/var/lib/mysql
+    networks:
+      - mvcweb7
+
+  mvcweb7-web:
+    image: maven:3.5-jdk-8
+    container_name: mvcweb7-web
+    working_dir: /app
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mvcweb7-mysql
+    volumes:
+      - ".:/app"
+      - "~/.m2:/root/.m2"
+    command: mvn clean spring-boot:run
+
+    networks:
+      - mvcweb7
+
+networks:
+   mvcweb7:
+
+volumes:
+   mvcweb7db:
+
